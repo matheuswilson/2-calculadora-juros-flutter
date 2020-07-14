@@ -1,3 +1,4 @@
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -12,22 +13,29 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
 
-    return MaterialApp(
-      title: 'Calculadora de Juros',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+    return DynamicTheme(
+      defaultBrightness: Brightness.light,      
+      data: (brightness) => new ThemeData(
+        primarySwatch: Colors.indigo,
+        brightness: brightness,
       ),
-      debugShowCheckedModeBanner: false,
-      home: CalculatorPage(),
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [
-        const Locale('pt', 'BR'),
-        const Locale('en', 'US'),
-      ],
+      themedWidgetBuilder: (context, theme) {
+        return MaterialApp(
+          title: 'Calculadora de Juros',
+          theme: theme,
+          debugShowCheckedModeBanner: false,
+          home: CalculatorPage(),
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('pt', 'BR'),
+            const Locale('en', 'US'),
+          ],
+        );
+      },
     );
   }
 }

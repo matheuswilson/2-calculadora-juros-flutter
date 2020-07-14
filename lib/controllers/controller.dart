@@ -1,16 +1,22 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:interest_calculator/helpers/constantes.dart';
 import 'package:interest_calculator/models/payment_slip.dart';
 import 'package:interest_calculator/models/result_payment_slip.dart';
+import 'package:intl/intl.dart';
 
 class Controller {
+  static final _dateFormat = DateFormat('dd/MM/yyyy');
+
   // Controler para o TextFormField
   final moneyController = new MoneyMaskedTextController();
   final feeController = new MoneyMaskedTextController();
   final interestController = new MoneyMaskedTextController();
-
+  final payDateController =
+      new TextEditingController(text: _dateFormat.format(DateTime.now()));
+  final dueDateController = new TextEditingController(text: _dateFormat.format(DateTime.now()));
   // Classe modelo que armazena as informações da tela
   final paymentSlip = new PaymentSlip(
     feeType: Constantes.rateLabels[0],
@@ -24,8 +30,10 @@ class Controller {
     ResultPaymentSlip result = ResultPaymentSlip();
     result.value = paymentSlip.money;
 
-    var payDate = DateTime(paymentSlip.payDate.year, paymentSlip.payDate.month, paymentSlip.payDate.day);
-    var dueDate = DateTime(paymentSlip.dueDate.year, paymentSlip.dueDate.month, paymentSlip.dueDate.day);
+    var payDate = DateTime(paymentSlip.payDate.year, paymentSlip.payDate.month,
+        paymentSlip.payDate.day);
+    var dueDate = DateTime(paymentSlip.dueDate.year, paymentSlip.dueDate.month,
+        paymentSlip.dueDate.day);
     // Verifica se deve aplicar os juros
     // Data de pagamento > Data de vencimento
     if (payDate.isAfter(dueDate)) {
@@ -74,5 +82,16 @@ class Controller {
 
   // Função para apagar (reiniciar) as informações da tela
   // Esta função faz parte do desafio, por isso ela não esta codificada
-  void clear() {}
+  void clear() {
+    moneyController.text = "0.0";
+    feeController.text = "0.0";
+    interestController.text = "0.0";
+    paymentSlip.dueDate = DateTime.now();
+    paymentSlip.payDate = DateTime.now();
+    dueDateController.text = _dateFormat.format(paymentSlip.dueDate);
+    payDateController.text = _dateFormat.format(paymentSlip.payDate);
+    paymentSlip.feeValue = 0.0;
+    paymentSlip.interestValue = 0.0;
+    paymentSlip.money = 0.0;
+  }
 }
